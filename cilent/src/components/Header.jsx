@@ -27,8 +27,8 @@ function Header() {
                     <FaMoon />
                 </Button>
                 <Link to='/sign-in'>
-                    <Button gradientDuoTone="purpleToBlue" className='bg-gradient-to-r from-purple-500 to-blue-500
-'>Sign in</Button>
+                    <Button className='bg-gradient-to-r from-purple-500 to-blue-500 
+' outline>Sign in</Button>
 
                 </Link>
                 <NavbarToggle />
