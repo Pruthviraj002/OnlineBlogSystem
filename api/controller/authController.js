@@ -9,7 +9,7 @@ export const signup = async (req, res, next) => {
 
     if (!username || !email || !password || username === '' || email === '' || password === '') {
         // return res.status(400).json({ "message": "All fields are required" })
-        next(errorHandler(400, "All field are required"))
+        return next(errorHandler(400, "All field are required"))
     }
     //!password hashing
     const hashPassword = bcryptjs.hashSync(password, 10)
@@ -24,6 +24,9 @@ export const signup = async (req, res, next) => {
         await newUser.save()
         res.json("signup successful")
     } catch (error) {
+        if (error.code === 11000) {
+            return next(errorHandler(400, "Email already exists"));
+        }
         next(error)
     }
 
