@@ -1,12 +1,19 @@
 import { Alert, Button, FloatingLabel, Label, Spinner, TextInput } from 'flowbite-react'
-import React, { useState } from 'react'
+import React, { useState, } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
 function SignIn() {
   const [formData, setFormData] = useState({})
-  const [errorMessage, setErrorMessage] = useState(null)
-  const [loading, setLoading] = useState(false)
+  // const [errorMessage, setErrorMessage] = useState(null)
+  // const [loading, setLoading] = useState(false)
+
+  const { loading, error: errorMessage } = useSelector(state => state.user)
   const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+
   const handleChange = (e) => {
     // console.log(e.target.value);
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() })
@@ -16,11 +23,14 @@ function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!formData.email || !formData.password) {
-      return setErrorMessage('Please fill out all fields')
+      // return setErrorMessage('Please fill out all fields')
+      return dispatch(signInFailure("Please fill out all fields"))
     }
     try {
-      setLoading(true)
-      setErrorMessage(null)
+      // setLoading(true)
+
+      // setErrorMessage(null)
+      dispatch(signInStart())
       const res = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: {
@@ -30,15 +40,16 @@ function SignIn() {
       })
       const data = await res.json()
       if (data.success === false) {
-        return setErrorMessage(data.message)
+        // return setErrorMessage(data.message)
+        dispatch(signInFailure(data.message))
       }
-      setLoading(false)
+      // setLoading(false)
       if (res.ok) {
-        navigate('/home')
+        dispatch(signInSuccess(data))
+        navigate('/')
       }
     } catch (error) {
-      setErrorMessage(error.message)
-      setErrorMessage(false)
+      dispatch(signInFailure(error.message))
 
     }
   }
@@ -57,7 +68,6 @@ function SignIn() {
         {/* rightside div */}
         <div className='flex-1'>
           <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
-
             <div className=''>
               <Label htmlFor="text" color="gray">Your email</Label>
               {/* <FloatingLabel className='' variant="filled" label="your username" /> */}
