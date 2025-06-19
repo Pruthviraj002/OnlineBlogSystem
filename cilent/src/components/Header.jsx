@@ -3,10 +3,14 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { FaMoon } from 'react-icons/fa'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { toggleTheme } from '../redux/theme/themeSlice'
+
 
 function Header() {
     const path = useLocation().pathname;
+    const dispatch = useDispatch()
+    const theme = useSelector((state) => state.theme.theme);
     const { currentUser } = useSelector(state => state.user)
     return (
         <Navbar className='border-b-2'>
@@ -23,7 +27,12 @@ function Header() {
                 <AiOutlineSearch />
             </Button>
             <div className='flex gap-2 md:order-2'>
-                <Button className='w-12 h-10 hidden sm:inline' color='gray' pill >
+                <Button className='w-12 h-10 hidden sm:inline' color='gray' pill
+                    onClick={() => {
+                        console.log('Toggling theme'); // Debug
+                        dispatch(toggleTheme());
+                    }}
+                >
                     <FaMoon />
                 </Button>
                 {currentUser ? (
@@ -50,13 +59,11 @@ function Header() {
                         </DropdownItem>
                     </Dropdown>
                 ) : (
-
-                    <Link to='/sign-in'>
-                        <Button className='bg-gradient-to-r from-purple-500 to-blue-500 
+                    // ("")}
+                    <Link to='/sign-in'> <Button className='bg-gradient-to-r from-purple-500 to-blue-500 
 ' outline>Sign in</Button>
                     </Link>
                 )}
-
                 <NavbarToggle />
             </div>
 
